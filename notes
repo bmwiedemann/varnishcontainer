@@ -1,0 +1,30 @@
+Goal: build a container for use in docker/podman
+that is easy to use for organizations or at home
+that prevents duplicate downloads of rpms from mirrors/download.o.o
+
+
+https://stackoverflow.com/questions/32727594/how-to-pass-arguments-to-shell-script-through-docker-run
+use $@ in entry script
+can use perl GetOpt::Long to parse args
+
+need to pass:
+* backend (downloadcontent) server: default downloadcontent2/ 2a01:4f8:1c1c:e50d::1 80
+* storage space: default: 5GB - can be non-persistent as varnish loses cache on restart anyway
+* localmirror (important so that not everything is fetched from NUE - needs to be decently fresh to get timely updates)
+* 2nd default backend for healthy checks + fallback?
+* ?health check interval: default: 60s or keep things simple without health checks and fewer failovers  to not add 10000 req/min onto downloadcontent
+* ttl+grace period: default 10s - how much staleness is acceptable?
+* HTTP port: default 18080
+* Proxy port: default 18081 (for use as backend to haproxy SSL)
+* Purge ACL extra IPs for repopush integration
+
+Handle SSL outside to simplify handling and reduce scope of this project.
+=> move certbot forward into haproxy
+
+
+Software needed in container: 
+varnish
+?mirrorcache + sqlite3 mode => better a separate container
+?haproxy for backend ssl access
+-keepalived
+
