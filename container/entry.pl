@@ -32,8 +32,22 @@ if($options{debug}) {
 }
 open(my $template, "<", "$dir/vcl.conf.in") or die "error reading vcl.conf.in: $!";
 
+my $skiptoendif = 0;
 while(<$template>) {
-    s/\{\{([^{}]*)}}/$options{$1}/ge;
+    if(m/\{%\s*if(.*)\s*%}/) {
+        if(!eval($1)) {
+            $skiptoendif++;
+        }
+        next;
+    }
+    if(m/\{%\s*endif\s*%}/) {
+        $skiptoendif=0;
+        next;
+    }
+    if($skiptoendif>0) {
+        next;
+    }
+    s/\{\{([^{}]*)}}/$options{$1}||""/ge;
     print $vcl $_;
 }
 

@@ -36,14 +36,13 @@ backend default {
     .between_bytes_timeout  = 2s;
 }
 
+{% if $options{localmirrorserver} %}
+backend localmirror {
+    .host = "{{localmirrorserver}}";
+    .port = "{{localmirrorport}}";
+}
 
-#{% if(localmirrorserver) %}
-#backend localmirror {
-#    .host = "{{localmirrorserver}}";
-#    .port = "{{localmirrorport}}";
-#}
-#{% endif %}
-
+{% endif %}
 sub vcl_recv {
     # Happens before we check if we have this in cache already.
     #
@@ -64,9 +63,11 @@ sub vcl_recv {
     }
     if (req.restarts == 0) {
         set req.http.X-Forwarded-For = client.ip;
-        #if (req.url ~ "^/tumbleweed/.*\.rpm" && req.url !~ "/boot/") {
-        #    set req.backend_hint = localmirror;
-        #}
+{% if $options{localmirrorserver} %}
+        if ((req.url ~ "-[a-z]*.xml.gz" || req.url ~ "\.rpm") && req.url !~ "/boot/") {
+            set req.backend_hint = localmirror;
+        }
+{% endif %}
     }
 }
 
