@@ -14,3 +14,7 @@ that prevents duplicate downloads of rpms from mirrors/download.o.o
 ## License
 
 GPLv2
+
+## Contribute
+
+Open issues and pull-requests on https://github.com/bmwiedemann/varnishcontainer
