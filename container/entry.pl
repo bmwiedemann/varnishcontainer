@@ -8,6 +8,7 @@ my %options = qw(
 backendserver       downloadcontent2b.opensuse.org
 backendport         80
 localmirrorport     80
+localmirrorpath     /
 storagesize         5G
 ttl                 60
 grace               60
@@ -15,10 +16,10 @@ grace               60
 
 my @options = qw(
         backendserver=s backendport=i
-        localmirrorserver=s localmirrorport=i
+        localmirrorserver=s localmirrorport=i localmirrorpath=s
+        storagesize=s
         ttl=i
         grace=i
-        purgeacl=s
         debug!
         );
 if(!GetOptions(\%options, @options) || (@ARGV && $ARGV[0] ne "")) {die "invalid option. @ARGV\n"}
@@ -35,13 +36,13 @@ open(my $template, "<", "$dir/vcl.conf.in") or die "error reading vcl.conf.in: $
 my $skiptoendif = 0;
 while(<$template>) {
     if(m/\{%\s*if(.*)\s*%}/) {
-        if(!eval($1)) {
+        if($skiptoendif or !eval($1)) {
             $skiptoendif++;
         }
         next;
     }
     if(m/\{%\s*endif\s*%}/) {
-        $skiptoendif=0;
+        $skiptoendif--;
         next;
     }
     if($skiptoendif>0) {

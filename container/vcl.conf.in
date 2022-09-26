@@ -66,6 +66,9 @@ sub vcl_recv {
 {% if $options{localmirrorserver} %}
         if ((req.url ~ "-[a-z]*.xml.gz" || req.url ~ "\.rpm") && req.url !~ "/boot/") {
             set req.backend_hint = localmirror;
+            {% if $options{localmirrorpath} ne "/" %}
+            set req.url = regsub(req.url, "^/", "{{localmirrorpath}}");
+            {% endif %}
         }
 {% endif %}
     }
@@ -77,6 +80,9 @@ sub vcl_synth {
 sub vcl_backend_fetch {
     if (bereq.retries > 0) { # if the local tumbleweed mirror failed, we fallback to the default backend
         set bereq.backend = default;
+        {% if $options{localmirrorpath} ne "/" %}
+        set bereq.url = regsub(bereq.url, "^{{localmirrorpath}}", "/");
+        {% endif %}
     }
 }
 
@@ -93,12 +99,13 @@ sub vcl_backend_response {
     #set beresp.grace = 10m;
     set beresp.keep = 4w;
 
-    #if (bereq.backend == localmirror) {
-    #    if (beresp.status >= 300 && bereq.retries < 1) {
-    #        return(retry);
-    #    }
-    #    set beresp.keep = 5m;
-    #}
+{% if $options{localmirrorserver} %}
+    if (bereq.backend == localmirror) {
+        if (beresp.status >= 300 && bereq.retries < 1) {
+            return(retry);
+        }
+    }
+{% endif %}
 
     If (bereq.url ~ "\.rpm$") {
          set beresp.ttl = 5m;
