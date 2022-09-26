@@ -74,6 +74,7 @@ sub vcl_recv {
     }
 }
 
+# generate synthetic replies without backend server
 sub vcl_synth {
 }
 
