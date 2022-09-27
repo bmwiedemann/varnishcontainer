@@ -1,0 +1,3 @@
+#!/bin/sh
+podman container cleanup -a --rm
+podman run --rm -d --name varnish -p 8008:80 -p 8000:81 localhost/varnish --localmirrorserver provo-mirror.opensuse.org --storagesize 63G

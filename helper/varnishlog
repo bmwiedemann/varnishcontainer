@@ -1,0 +1,2 @@
+#!/bin/sh
+exec podman exec varnish /usr/sbin/varnishncsa -a -F '%{X-Forwarded-For}i %l %u %t %r" %s %b "%{Referer}i" "%{User-agent}i"' >> /var/log/varnish/varnish.log

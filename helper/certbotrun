@@ -1,0 +1,9 @@
+#!/bin/sh
+#certbot certonly --standalone --preferred-challenges http \
+#  --http-01-port 80 -d downloadcontent-us1.opensuse.org \
+#  --post-hook="systemctl restart haproxy"
+
+certbot renew --standalone --preferred-challenges http \
+  --http-01-port 8080 \
+  --post-hook="systemctl reload haproxy"
+  #--deploy-hook="/usr/local/bin/certbot-deploy-hook" \

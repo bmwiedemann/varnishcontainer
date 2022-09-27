@@ -1,0 +1,13 @@
+[Unit]
+Description=Podman varnishlog.service
+Wants=network-online.target varnishcontainer.service
+After=network-online.target varnishcontainer.service
+
+[Service]
+Restart=on-failure
+TimeoutStopSec=70
+ExecStart=/usr/local/bin/varnishlog
+Type=simple
+
+[Install]
+WantedBy=default.target
