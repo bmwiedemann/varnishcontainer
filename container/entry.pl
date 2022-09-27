@@ -33,25 +33,29 @@ if($options{debug}) {
 }
 open(my $template, "<", "$dir/vcl.conf.in") or die "error reading vcl.conf.in: $!";
 
-my $skiptoendif = 0;
-while(<$template>) {
-    if(m/\{%\s*if(.*)\s*%}/) {
-        if($skiptoendif or !eval($1)) {
-            $skiptoendif++;
+my $line=0;
+sub handle_lines($$);
+sub handle_lines($$)
+{ my ($fd, $skiptoendif) = @_;
+
+    while(<$fd>) {
+        #print $vcl $line++, "$skiptoendif ";
+        if(m/\{%\s*if(.*)\s*%\}/) {
+            handle_lines($fd, ($skiptoendif or !eval($1)));
+            next;
         }
-        next;
+        if(m/\{%\s*endif\s*%\}/) {
+            return
+        }
+        if($skiptoendif>0) {
+            next;
+        }
+        s/\{\{([^{}]*)\}\}/$options{$1}||""/ge;
+        print $vcl $_;
     }
-    if(m/\{%\s*endif\s*%}/) {
-        $skiptoendif--;
-        next;
-    }
-    if($skiptoendif>0) {
-        next;
-    }
-    s/\{\{([^{}]*)}}/$options{$1}||""/ge;
-    print $vcl $_;
 }
 
+handle_lines($template, 0);
 close $template;
 close $vcl;
 
