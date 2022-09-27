@@ -8,7 +8,7 @@ that prevents duplicate downloads of rpms from mirrors/download.o.o
 ## Usage
 
     podman build --tag varnish .
-    podman run --name varnish -d -p 8080:80 localhost/varnish --localmirrorserver 134.76.12.6 --localmirrorpath=/pub/linux/suse/opensuse/ --storagesize 4G
+    podman run --name varnish --rm -d -p 8080:80 localhost/varnish --localmirrorserver 134.76.12.6 --localmirrorpath=/pub/linux/suse/opensuse/ --storagesize 4G
     curl -v localhost:8080/tumbleweed/repo/oss/media.1/products
     podman exec -ti varnish varnishstat
     podman generate systemd --new --name varnish > /etc/systemd/system/varnishcontainer.service
