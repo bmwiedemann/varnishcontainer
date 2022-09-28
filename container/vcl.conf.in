@@ -40,6 +40,20 @@ backend default {
 backend localmirror {
     .host = "{{localmirrorserver}}";
     .port = "{{localmirrorport}}";
+    .probe = {
+        .request =
+            "HEAD {{localmirrorpath}}tumbleweed/repo/oss/media.1/products HTTP/1.1"
+            "Host: downloadcontent.opensuse.org"
+            "Connection: close"
+            "User-Agent: containerized Varnish Health Probe";
+        .interval  = 30s;
+        .timeout   = 5s;
+        .window    = 5;
+        .threshold = 3;
+    }
+    .connect_timeout        = 4s;
+    .first_byte_timeout     = 30s;
+    .between_bytes_timeout  = 2s;
 }
 
 {% endif %}
@@ -58,19 +72,19 @@ sub vcl_recv {
     unset req.http.Cookie;
     unset req.http.Authorization;
 
-    if (std.healthy(req.backend_hint)) {
-        set req.grace = {{grace}}s;
-    }
     if (req.restarts == 0) {
         set req.http.X-Forwarded-For = client.ip;
 {% if $options{localmirrorserver} %}
-        if (req.url ~ "-[a-z]*.xml.gz" || (req.url ~ "\.rpm" && req.url !~ "/boot/")) {
+        if (std.healthy(localmirror) && (req.url ~ "-[a-z]*.xml.gz" || (req.url ~ "\.rpm" && req.url !~ "/boot/"))) {
             set req.backend_hint = localmirror;
             {% if $options{localmirrorpath} ne "/" %}
             set req.url = regsub(req.url, "^/", "{{localmirrorpath}}");
             {% endif %}
         }
 {% endif %}
+    }
+    if (std.healthy(req.backend_hint)) {
+        set req.grace = {{grace}}s;
     }
 }
 
