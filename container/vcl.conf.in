@@ -111,6 +111,9 @@ sub vcl_backend_response {
     If (bereq.url ~ "\.rpm$") {
          set beresp.ttl = 5m;
     }
+    If (bereq.url ~ "-[a-z]*.xml.gz") {
+         set beresp.grace = 6h;
+    }
     #If (bereq.url ~ "\.iso$") {
     #     set beresp.ttl = 1h;
     #}
