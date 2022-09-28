@@ -64,7 +64,7 @@ sub vcl_recv {
     if (req.restarts == 0) {
         set req.http.X-Forwarded-For = client.ip;
 {% if $options{localmirrorserver} %}
-        if ((req.url ~ "-[a-z]*.xml.gz" || req.url ~ "\.rpm") && req.url !~ "/boot/") {
+        if (req.url ~ "-[a-z]*.xml.gz" || (req.url ~ "\.rpm" && req.url !~ "/boot/")) {
             set req.backend_hint = localmirror;
             {% if $options{localmirrorpath} ne "/" %}
             set req.url = regsub(req.url, "^/", "{{localmirrorpath}}");
