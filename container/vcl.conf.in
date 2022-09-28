@@ -123,7 +123,9 @@ sub vcl_backend_response {
 {% endif %}
 
     If (bereq.url ~ "\.rpm$") {
-         set beresp.ttl = 5m;
+         if (beresp.grace < 5m) {
+             set beresp.grace = 5m;
+         }
     }
     If (bereq.url ~ "-[a-z]*.xml.gz") {
          set beresp.grace = 6h;
