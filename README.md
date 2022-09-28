@@ -12,7 +12,7 @@ that prevents duplicate downloads of rpms from mirrors/download.o.o
     curl -v localhost:8080/tumbleweed/repo/oss/media.1/products
     podman exec -ti varnish varnishstat
     podman generate systemd --new --name varnish > /etc/systemd/system/varnishcontainer.service
-    http_proxy=http://$IP:8080/ zypper ref # only works with http://download.o.o repos
+    http_proxy=http://$IP:8080/ zypper ref # only works with http://download.o.o or http://mirrorcache.o.o repos, but not with https and not with /path/to/opensuse/
 
 Might also use baseurl=http://$IP:8080/PATH in /etc/zypp/repos.d/
 
