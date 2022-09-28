@@ -13,6 +13,7 @@ that prevents duplicate downloads of rpms from mirrors/download.o.o
     podman exec -ti varnish varnishstat
     podman generate systemd --new --name varnish > /etc/systemd/system/varnishcontainer.service
     http_proxy=http://$IP:8080/ zypper ref # only works with http://download.o.o or http://mirrorcache.o.o repos, but not with https and not with /path/to/opensuse/
+    varnish_reload_vcl # after test-editing the generated vcl.conf
 
 Might also use baseurl=http://$IP:8080/PATH in /etc/zypp/repos.d/
 

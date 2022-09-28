@@ -1,0 +1,2 @@
+#!/bin/sh
+exec podman exec varnish varnish_reload_vcl
