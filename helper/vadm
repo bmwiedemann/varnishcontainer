@@ -1,0 +1,2 @@
+#!/bin/sh
+exec podman exec varnish varnishadm -S /var/cache/varnish/varnishd/_.secret -T 127.0.0.1:6082 "$@"
