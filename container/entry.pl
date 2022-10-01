@@ -22,7 +22,7 @@ my @options = qw(
         grace=i
         debug!
         );
-if(!GetOptions(\%options, @options) || (@ARGV && $ARGV[0] ne "")) {die "invalid option. @ARGV\n"}
+if(!GetOptions(\%options, @options)) {die "invalid option. @ARGV\n"}
 
 my $vcl;
 if($options{debug}) {
@@ -60,6 +60,6 @@ close $template;
 close $vcl;
 
 unless($options{debug}) {
-    system(qw(/usr/sbin/varnishd -P /run/varnishd.pid -F -f /etc/varnish/vcl.conf -T:6082 -s), "file,/var/cache/varnish,$options{storagesize}", "-j", "unix,user=varnish", "-a", ":80,HTTP", "-a", ":81,PROXY");
+    system(qw(/usr/sbin/varnishd -P /run/varnishd.pid -F -f /etc/varnish/vcl.conf -T:6082 -s), "file,/var/cache/varnish,$options{storagesize}", "-j", "unix,user=varnish", "-a", ":80,HTTP", "-a", ":81,PROXY", @ARGV);
     die "varnishd terminated: $? $!";
 }
