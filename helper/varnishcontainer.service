@@ -15,7 +15,9 @@ Environment=PODMAN_SYSTEMD_UNIT=%n
 Restart=on-failure
 TimeoutStopSec=70
 ExecStartPre=/bin/rm -f %t/%n.ctr-id
-ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon --replace -d --name varnish -p 8008:80 -p 8000:81 localhost/varnish --localmirrorserver provo-mirror.opensuse.org --storagesize 63G
+ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon --replace -d --name varnish -p 8008:80 -p 8000:81 localhost/varnish --storagesize 63G --ttl 10 --grace 90 --backendserver 10.88.0.1 --backendport 27080
+
+#ExecStart=/usr/bin/podman run --cidfile=%t/%n.ctr-id --cgroups=no-conmon --rm --sdnotify=conmon --replace -d --name varnish -p 8008:80 -p 8000:81 localhost/varnish --localmirrorserver provo-mirror.opensuse.org --storagesize 63G --ttl 10 --grace 90
 ExecStop=/usr/bin/podman stop --ignore --cidfile=%t/%n.ctr-id
 ExecStopPost=/usr/bin/podman rm -f --ignore --cidfile=%t/%n.ctr-id
 Type=notify
