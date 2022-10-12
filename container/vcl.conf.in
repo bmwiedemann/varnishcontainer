@@ -14,6 +14,7 @@ acl purge {
     "localhost";
     "127.0.0.1";
     "::1";
+    "10.0.0.0/8";
 }
 
 # Default backend definition. Set this to point to your content server.
