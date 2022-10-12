@@ -43,7 +43,7 @@ backend localmirror {
     .probe = {
         .request =
             "HEAD {{localmirrorpath}}tumbleweed/repo/oss/media.1/products HTTP/1.1"
-            "Host: downloadcontent.opensuse.org"
+            "Host: {{localmirrorserver}}"
             "Connection: close"
             "User-Agent: containerized Varnish Health Probe";
         .interval  = 30s;
