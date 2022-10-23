@@ -1,0 +1,9 @@
+/var/log/varnish/*.log {
+    missingok
+    notifempty
+    sharedscripts
+    delaycompress
+    postrotate
+        /usr/bin/systemctl restart varnishlog
+    endscript
+}
