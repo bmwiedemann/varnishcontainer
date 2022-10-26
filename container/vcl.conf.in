@@ -64,6 +64,10 @@ sub vcl_recv {
     # Typically you clean up the request here, removing cookies you don't need,
     # rewriting the request, etc.
     
+    if (req.url == "/") {
+        return (synth(200, "mainpage"));
+    }
+
     if (req.method == "PURGE") {
         if (!client.ip ~ purge) {
             return (synth(405, client.ip + " is not allowed to send PURGE requests."));
@@ -91,6 +95,23 @@ sub vcl_recv {
 
 # generate synthetic replies without backend server
 sub vcl_synth {
+    if (resp.reason == "mainpage") {
+        set resp.http.Content-Type = "text/html; charset=utf-8";
+synthetic( {"<!DOCTYPE html>
+<html>
+  <head>
+    <title>Downloadcontent</title>
+  </head>
+  <body>
+    <h1>Downloadcontent</h1>
+    <p>This is a
+    Varnish cache server that serves all the content from downloadcontent.opensuse.org</p>
+    <p>There is no directory listing. People will get auto-redirected here by download.o.o / MirrorCache for files that are not on mirrors</p>
+  </body>
+</html>
+"} );
+        return (deliver);
+    }
 }
 
 sub vcl_backend_fetch {
