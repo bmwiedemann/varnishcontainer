@@ -91,6 +91,10 @@ sub vcl_recv {
     if (std.healthy(req.backend_hint)) {
         set req.grace = {{grace}}s;
     }
+    if (req.url ~ "repomd.xml") {
+        set req.ttl = 3s;
+        set req.grace = 2s;
+    }
 }
 
 # generate synthetic replies without backend server
