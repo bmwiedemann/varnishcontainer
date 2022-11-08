@@ -67,6 +67,10 @@ sub vcl_recv {
     if (req.url == "/") {
         return (synth(200, "mainpage"));
     }
+    if (req.url ~ "\.(iso|qcow2|tar\.xz|raw\.xz|vmdk\.xz|vhdx\.xz|vagrant\.virtualbox\.box|vagrant\.libvirt\.box)$") { # redirect huge files - varnish does not work well with these
+        set req.http.location = "https://downloadcontent.opensuse.org"+req.url;
+        return (synth(702, " moved"));
+    }
 
     if (req.method == "PURGE") {
         if (!client.ip ~ purge) {
@@ -99,6 +103,11 @@ sub vcl_recv {
 
 # generate synthetic replies without backend server
 sub vcl_synth {
+    if (resp.status == 702) {
+        set resp.http.location = req.http.location;
+        set resp.status = 302;
+        return (deliver);
+    }
     if (resp.reason == "mainpage") {
         set resp.http.Content-Type = "text/html; charset=utf-8";
 synthetic( {"<!DOCTYPE html>
