@@ -32,9 +32,9 @@ backend default {
         .window    = 5;
         .threshold = 3;
     }
-    .connect_timeout        = 4s;
+    .connect_timeout        = 5s;
     .first_byte_timeout     = 30s;
-    .between_bytes_timeout  = 2s;
+    .between_bytes_timeout  = 5s;
 }
 
 {% if $options{localmirrorserver} %}
