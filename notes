@@ -28,3 +28,17 @@ varnish
 ?haproxy for backend ssl access
 -keepalived
 
+
+2022-12-09 debug/mitigate http connection loss on uncached files
+https://www.haproxy.com/blog/haproxy-layer-7-retries-and-chaos-engineering/
+
+
+curl -v https://downloadcontent-us1.opensuse.org/repositories/home:/bmwiedemann/openSUSE_Tumbleweed/x86_64/altimagebuild-1-15.3.x86_64.rpm | dd of=/dev/null bs=64k
+233238528 bytes (233 MB, 222 MiB) copied, 11.1512 s, 20.9 MB/s
+
+curl: (18) transfer closed with 90888404 bytes remaining to read
+
+curl -X PURGE http://localhost/repositories/home:/bmwiedemann/openSUSE_Tumbleweed/x86_64/altimagebuild-1-15.3.x86_64.rpm
+curl -X PURGE http://downloadcontent-us1.opensuse.org/repositories/home:/bmwiedemann/openSUSE_Tumbleweed/x86_64/altimagebuild-1-15.3.x86_64.rpm
+time curl -k https://downloadcontent2b.opensuse.org/repositories/home:/bmwiedemann/openSUSE_Tumbleweed/x86_64/altimagebuild-1-15.3.x86_64.rpm | dd of=/dev/null bs=64k
+
