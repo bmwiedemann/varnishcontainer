@@ -5,7 +5,7 @@ use Getopt::Long;
 my $dir = "/root";
 
 my %options = qw(
-backendserver       downloadcontent2b.opensuse.org
+backendserver       downloadcontent.opensuse.org
 backendport         80
 localmirrorport     80
 localmirrorpath     /
@@ -24,14 +24,14 @@ my @options = qw(
         );
 if(!GetOptions(\%options, @options)) {die "invalid option. @ARGV\n"}
 
-my $vcl;
+my $conf;
 if($options{debug}) {
-    open($vcl, ">&STDOUT");
+    open($conf, ">&STDOUT");
     $dir = "container";
 } else {
-    open($vcl, ">", "/etc/varnish/vcl.conf") or die "error writing vcl.conf: $!";
+    open($conf, ">", "/etc/nginx/vhosts.d/downloadcontentcache.conf") or die "error writing .conf: $!";
 }
-open(my $template, "<", "$dir/vcl.conf.in") or die "error reading vcl.conf.in: $!";
+open(my $template, "<", "$dir/downloadcontentcache.conf.in") or die "error reading downloadcontentcache.conf.in: $!";
 
 my $line=0;
 sub handle_lines($$);
@@ -39,7 +39,7 @@ sub handle_lines($$)
 { my ($fd, $skiptoendif) = @_;
 
     while(<$fd>) {
-        #print $vcl $line++, "$skiptoendif ";
+        #print $conf $line++, "$skiptoendif ";
         if(m/\{%\s*if(.*)\s*%\}/) {
             handle_lines($fd, ($skiptoendif or !eval($1)));
             next;
@@ -51,15 +51,16 @@ sub handle_lines($$)
             next;
         }
         s/\{\{([^{}]*)\}\}/$options{$1}||""/ge;
-        print $vcl $_;
+        print $conf $_;
     }
 }
 
 handle_lines($template, 0);
 close $template;
-close $vcl;
+close $conf;
 
+system(qw(cp -a /root/nginx.conf /etc/nginx/));
 unless($options{debug}) {
-    system(qw(/usr/sbin/varnishd -P /run/varnishd.pid -F -f /etc/varnish/vcl.conf -T:6082 -s), "file,/var/cache/varnish,$options{storagesize}", "-j", "unix,user=varnish", "-a", ":80,HTTP", "-a", ":81,PROXY", @ARGV);
-    die "varnishd terminated: $? $!";
+    system(qw(/usr/sbin/nginx -g), "daemon off;", @ARGV);
+    die "nginx terminated: $? $!";
 }

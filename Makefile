@@ -8,4 +8,4 @@ install:
 	install -m 644 -p helper/logrotate.d.varnish $(DESTDIR)$(ETC)/logrotate.d/varnish
 
 build:
-	podman build --tag varnish .
+	podman build --tag nginxcache .

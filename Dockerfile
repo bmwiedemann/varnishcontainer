@@ -4,8 +4,9 @@ COPY container/server-http-repo.key /root/server-http-repo.key
 
 RUN rpmkeys --import /root/server-http-repo.key \
     && zypper ar https://download.opensuse.org/repositories/server:/http/15.4/ http \
-    && zypper -n install --no-recommends varnish \
-    && zypper clean --all
+    && zypper -n install --no-recommends nginx python3-certbot-nginx \
+    && zypper clean --all \
+    && mkdir -p /var/cache/nginx
 
 COPY container /root
 
