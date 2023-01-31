@@ -5,7 +5,7 @@
         listen       80;
         server_name  localhost;
         location / {
-            proxy_pass             https://downloadcontent.opensuse.org;
+            proxy_pass             {{backendserver}};
             #proxy_set_header       Host $host;
             proxy_buffering        on;
             proxy_socket_keepalive on;
@@ -17,7 +17,7 @@
             proxy_cache_revalidate on;
             proxy_http_version     1.1;
             proxy_cache            STATIC;
-            proxy_cache_valid      200  4m;
+            proxy_cache_valid      200  {{ttl}};
             proxy_cache_valid      any  1m;
             proxy_cache_use_stale  error timeout invalid_header updating
                                    http_500 http_502 http_503 http_504;

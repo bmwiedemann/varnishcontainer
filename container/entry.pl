@@ -5,21 +5,15 @@ use Getopt::Long;
 my $dir = "/root";
 
 my %options = qw(
-backendserver       downloadcontent.opensuse.org
-backendport         80
-localmirrorport     80
-localmirrorpath     /
+backendserver       https://downloadcontent2.opensuse.org/
 storagesize         5G
-ttl                 60
-grace               60
+ttl                 4m
 );
 
 my @options = qw(
-        backendserver=s backendport=i
-        localmirrorserver=s localmirrorport=i localmirrorpath=s
+        backendserver=s
         storagesize=s
         ttl=i
-        grace=i
         debug!
         );
 if(!GetOptions(\%options, @options)) {die "invalid option. @ARGV\n"}
