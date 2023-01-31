@@ -5,7 +5,7 @@ use Getopt::Long;
 my $dir = "/root";
 
 my %options = qw(
-backendserver       https://downloadcontent2.opensuse.org/
+backendserver       http://$host$request_uri
 storagesize         5G
 ttl                 4m
 );

@@ -4,6 +4,11 @@ build a container for use in docker/podman
 that is easy to use for organizations or at home
 that prevents duplicate downloads of rpms from mirrors/download.o.o
 
+## Beware
+
+This will open a proxy, so if your host IP is reachable from the Internet
+or other untrusted parties, you need to configure a firewall so
+that they cannot send traffic through the proxy.
 
 ## Usage
 
