@@ -1,2 +1,0 @@
-#!/bin/sh
-exec podman exec --env TERM=$TERM -ti varnish varnishstat
