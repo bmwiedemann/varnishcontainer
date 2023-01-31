@@ -23,6 +23,13 @@
                                    http_500 http_502 http_503 http_504;
         }
 
+        location /nginx_status {
+                stub_status on;
+                access_log   off;
+                #allow 127.0.0.1;
+                #deny all;
+        }
+
         #location /.well-known/acme-challenge {
         #    proxy_pass http://[fd4c:ab24:3f04::16]:8080;
         #}
