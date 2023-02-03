@@ -13,7 +13,7 @@ ttl                 4m
 my @options = qw(
         backendserver=s
         storagesize=s
-        ttl=i
+        ttl=s
         debug!
         );
 if(!GetOptions(\%options, @options)) {die "invalid option. @ARGV\n"}
