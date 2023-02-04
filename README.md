@@ -16,7 +16,7 @@ that they cannot send traffic through the proxy.
     podman run --name nginxcache --volume /var/cache/nginx:/var/cache/nginx --rm -d -p 8080:80 localhost/nginxcache --storagesize 4G
     curl -v localhost:8080/tumbleweed/repo/oss/media.1/products
     podman generate systemd --new --name nginxcache > /etc/systemd/system/nginxcachecontainer.service
-    http_proxy=http://$IP:8080/ zypper ref # only works with http://download.o.o or http://mirrorcache.o.o repos, but not with https and not with /path/to/opensuse/
+    http_proxy=http://$IP:8080/ ZYPP_MULTICURL=0 zypper ref # only works with http://download.o.o or http://mirrorcache.o.o repos, but not with https and not with /path/to/opensuse/
     nginxcache_reload # after test-editing the generated .conf
 
 Might also use baseurl=http://$IP:8080/PATH in /etc/zypp/repos.d/
